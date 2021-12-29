@@ -32,10 +32,10 @@ public class CartService implements ICartService{
 	
 	@Override
 	public ResponseDTO addToCart(String token, CartDTO cartDto) {
-		boolean verify = restTemplate.getForObject("http://localhost:8082/user/verify?token="+token, Boolean.class);
+		boolean verify = restTemplate.getForObject("http://BOOK-USER/user/verify?token="+token, Boolean.class);
 		if(verify) {		
 			Cart cart = modelmapper.map(cartDto, Cart.class);
-			Book book = restTemplate.getForObject("http://localhost:8085/book/getBook/"+cartDto.getBookId()+"?token="+token,Book.class);
+			Book book = restTemplate.getForObject("http://BOOKSTORE-BOOK/book/getBook/"+cartDto.getBookId()+"?token="+token,Book.class);
 			if(book.getId() == cartDto.getBookId()) {
 			cart.setUserId(jwtToken.decodeToken(token));
 			cartRepository.save(cart);
@@ -48,7 +48,7 @@ public class CartService implements ICartService{
 
 	@Override
 	public ResponseDTO getAllCartItem(String token) {
-		boolean verify = restTemplate.getForObject("http://localhost:8082/user/verify?token="+token, Boolean.class);
+		boolean verify = restTemplate.getForObject("http://BOOK-USER/user/verify?token="+token, Boolean.class);
 		if(verify) {
 			List<Cart> getCartItems = cartRepository.findAll();
 			return new ResponseDTO("book has add to cart",getCartItems,200);
@@ -59,7 +59,7 @@ public class CartService implements ICartService{
 	@Override
 	public ResponseDTO getcartitemsById(String token) {
 		long id = jwtToken.decodeToken(token);
-		boolean verify = restTemplate.getForObject("http://localhost:8082/user/verify?token="+token, Boolean.class);
+		boolean verify = restTemplate.getForObject("http://BOOK-USER/user/verify?token="+token, Boolean.class);
 		if(verify) {
 			List<Cart> cartList = cartRepository.findAll();
 			if(cartList.isEmpty()) {
@@ -96,7 +96,7 @@ public class CartService implements ICartService{
 
 	@Override
 	public void removeCartItem(String token, Long id) {
-		boolean verify = restTemplate.getForObject("http://localhost:8082/user/verify?token="+token, Boolean.class);
+		boolean verify = restTemplate.getForObject("http://BOOK-USER/user/verify?token="+token, Boolean.class);
 		if(verify) {
 			Optional<Cart> isCartPresent = cartRepository.findById(id);
 			if(isCartPresent.isPresent()) {
